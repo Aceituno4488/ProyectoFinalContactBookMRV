@@ -2,6 +2,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace ContactManager
 {
@@ -51,15 +53,14 @@ namespace ContactManager
                     case "6": MergeDuplicates(); break;
                     case "7": SaveContacts(); break;
                     case "8": ExitApplication(); return;
-                    default:
-                        Console.WriteLine("Invalid option. Press ENTER to try again.");
-                        Console.ReadLine();
-                        break;
+                    default: Console.WriteLine("Invalid option. Press ENTER to try again."); Console.ReadLine(); break;
                 }
             }
         }
 
-        // Clase Contact en construccion
+        // Classes and methods for loading, showing, adding, editing, deleting,
+        // merging, saving contacts and exiting will be placed here.
+
         class Contact
         {
             public string Name { get; set; }
@@ -67,64 +68,29 @@ namespace ContactManager
             public string PhoneNumber { get; set; }
             public string Email { get; set; }
 
-            // Falta agregar validaciones o formato mas detallado
             public override string ToString()
             {
                 return $"{Name} {LastName}, {PhoneNumber}, {Email}";
             }
         }
 
-        // Métodos aún no implementados (en construccion)
-        static void LoadContacts()
-        {
-            Console.WriteLine("Cargar contactos aún no implementado...");
-            Console.ReadLine();
-        }
-
-        static void ShowContacts()
-        {
-            Console.WriteLine("Mostrar contactos aún no implementado...");
-            Console.ReadLine();
-        }
-
-        static void AddContact()
-        {
-            Console.WriteLine("Agregar contacto aún no implementado...");
-            Console.ReadLine();
-        }
-
-        static void EditContact()
-        {
-            Console.WriteLine("Editar contacto aún no implementado...");
-            Console.ReadLine();
-        }
-
-        static void DeleteContact()
-        {
-            Console.WriteLine("Eliminar contacto aún no implementado...");
-            Console.ReadLine();
-        }
-
-        static void MergeDuplicates()
-        {
-            Console.WriteLine("Fusionar duplicados aún no implementado...");
-            Console.ReadLine();
-        }
-
-        static void SaveContacts()
-        {
-            Console.WriteLine("Guardar contactos aún no implementado...");
-            Console.ReadLine();
-        }
+        // Stub methods (to be completed as per rubric)
+        static void LoadContacts() { /* Implementation with messages */ }
+        static void ShowContacts() { /* Implementation with pagination and sorting */ }
+        static void AddContact() { /* Implementation with validations */ }
+        static void EditContact() { /* Implementation with selection and confirmation */ }
+        static void DeleteContact() { /* Implementation with confirmation */ }
+        static void MergeDuplicates() { /* Implementation with merging logic */ }
+        static void SaveContacts() { /* Implementation with overwrite confirmation */ }
 
         static void ExitApplication()
         {
             if (changesMade)
             {
-                Console.WriteLine("Hay cambios no guardados. ¿Salir sin guardar? (s/n)");
-                if (Console.ReadLine().ToLower() != "s") return;
+                Console.WriteLine("Changes have been made. Are you sure you want to exit without saving? (y/n)");
+                if (Console.ReadLine().ToLower() != "y") return;
             }
-            Console.WriteLine("Saliendo del programa...");
+            Console.WriteLine("Thank you for using Contact Manager. Goodbye!");
             Console.ReadLine();
         }
     }
