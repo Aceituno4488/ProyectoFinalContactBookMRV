@@ -1,4 +1,4 @@
-﻿//Codigo Hecho por Mariana Rivera Vazquez
+﻿// Code written by Mariana Rivera Vázquez
 
 using System;
 using System.Collections.Generic;
@@ -53,14 +53,15 @@ namespace ContactManager
                     case "6": MergeDuplicates(); break;
                     case "7": SaveContacts(); break;
                     case "8": ExitApplication(); return;
-                    default: Console.WriteLine("Invalid option. Press ENTER to try again."); Console.ReadLine(); break;
+                    default: 
+                        Console.WriteLine("Invalid option. Press ENTER to try again."); 
+                        Console.ReadLine(); 
+                        break;
                 }
             }
         }
 
-        // Classes and methods for loading, showing, adding, editing, deleting,
-        // merging, saving contacts and exiting will be placed here.
-
+        // Class to represent a contact
         class Contact
         {
             public string Name { get; set; }
@@ -74,14 +75,14 @@ namespace ContactManager
             }
         }
 
-        // Stub methods (to be completed as per rubric)
-        static void LoadContacts() { /* Implementation with messages */ }
-        static void ShowContacts() { /* Implementation with pagination and sorting */ }
-        static void AddContact() { /* Implementation with validations */ }
-        static void EditContact() { /* Implementation with selection and confirmation */ }
-        static void DeleteContact() { /* Implementation with confirmation */ }
-        static void MergeDuplicates() { /* Implementation with merging logic */ }
-        static void SaveContacts() { /* Implementation with overwrite confirmation */ }
+        // Main contact manager methods
+        static void LoadContacts() { /* Load from file */ }
+        static void ShowContacts() { /* Display contact list */ }
+        static void AddContact() { /* Add new contact */ }
+        static void EditContact() { /* Edit existing contact */ }
+        static void DeleteContact() { /* Delete contact */ }
+        static void MergeDuplicates() { /* Merge duplicate contacts */ }
+        static void SaveContacts() { /* Save to file */ }
 
         static void ExitApplication()
         {
