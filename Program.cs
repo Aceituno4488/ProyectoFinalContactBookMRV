@@ -53,9 +53,9 @@ namespace ContactManager
                     case "6": MergeDuplicates(); break;
                     case "7": SaveContacts(); break;
                     case "8": ExitApplication(); return;
-                    default: 
-                        Console.WriteLine("Invalid option. Press ENTER to try again."); 
-                        Console.ReadLine(); 
+                    default:
+                        Console.WriteLine("Invalid option. Press ENTER to try again.");
+                        Console.ReadLine();
                         break;
                 }
             }
@@ -71,18 +71,188 @@ namespace ContactManager
 
             public override string ToString()
             {
-                return $"{Name} {LastName}, {PhoneNumber}, {Email}";
+                return $"{Name} {LastName}, Phone: {PhoneNumber}, Email: {Email}";
             }
         }
 
-        // Main contact manager methods
-        static void LoadContacts() { /* Load from file */ }
-        static void ShowContacts() { /* Display contact list */ }
-        static void AddContact() { /* Add new contact */ }
-        static void EditContact() { /* Edit existing contact */ }
-        static void DeleteContact() { /* Delete contact */ }
-        static void MergeDuplicates() { /* Merge duplicate contacts */ }
-        static void SaveContacts() { /* Save to file */ }
+        static void LoadContacts()
+        {
+            if (File.Exists("contacts.txt"))
+            {
+                contacts.Clear();
+                string[] lines = File.ReadAllLines("contacts.txt");
+
+                foreach (var line in lines)
+                {
+                    var parts = line.Split('|');
+                    if (parts.Length == 4)
+                    {
+                        contacts.Add(new Contact
+                        {
+                            Name = parts[0],
+                            LastName = parts[1],
+                            PhoneNumber = parts[2],
+                            Email = parts[3]
+                        });
+                    }
+                }
+
+                Console.WriteLine("Contacts loaded successfully. Press ENTER to continue.");
+            }
+            else
+            {
+                Console.WriteLine("No contacts file found. Press ENTER to continue.");
+            }
+            Console.ReadLine();
+        }
+
+        static void SaveContacts()
+        {
+            using (StreamWriter writer = new StreamWriter("contacts.txt"))
+            {
+                foreach (var contact in contacts)
+                {
+                    writer.WriteLine($"{contact.Name}|{contact.LastName}|{contact.PhoneNumber}|{contact.Email}");
+                }
+            }
+
+            changesMade = false;
+            Console.WriteLine("Contacts saved successfully. Press ENTER to continue.");
+            Console.ReadLine();
+        }
+
+        static void ShowContacts()
+        {
+            Console.Clear();
+            Console.WriteLine("=== Contact List ===");
+
+            if (contacts.Count == 0)
+            {
+                Console.WriteLine("No contacts to display.");
+            }
+            else
+            {
+                for (int i = 0; i < contacts.Count; i++)
+                {
+                    Console.WriteLine($"{i + 1}. {contacts[i]}");
+                }
+            }
+
+            Console.WriteLine("\nPress ENTER to return to the menu.");
+            Console.ReadLine();
+        }
+
+        static void AddContact()
+        {
+            Console.Clear();
+            Console.WriteLine("=== Add New Contact ===");
+
+            Console.Write("First Name: ");
+            string name = Console.ReadLine();
+
+            Console.Write("Last Name: ");
+            string lastName = Console.ReadLine();
+
+            Console.Write("Phone Number: ");
+            string phone = Console.ReadLine();
+
+            Console.Write("Email: ");
+            string email = Console.ReadLine();
+
+            if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(lastName))
+            {
+                Console.WriteLine("Name and Last Name are required. Press ENTER to return.");
+                Console.ReadLine();
+                return;
+            }
+
+            contacts.Add(new Contact
+            {
+                Name = name,
+                LastName = lastName,
+                PhoneNumber = phone,
+                Email = email
+            });
+
+            changesMade = true;
+
+            Console.WriteLine("Contact added successfully! Press ENTER to continue.");
+            Console.ReadLine();
+        }
+
+        static void EditContact()
+        {
+            ShowContacts();
+
+            Console.Write("Enter the number of the contact to edit: ");
+            if (int.TryParse(Console.ReadLine(), out int index) && index >= 1 && index <= contacts.Count)
+            {
+                Contact c = contacts[index - 1];
+
+                Console.Write($"New First Name ({c.Name}): ");
+                string name = Console.ReadLine();
+                Console.Write($"New Last Name ({c.LastName}): ");
+                string lastName = Console.ReadLine();
+                Console.Write($"New Phone Number ({c.PhoneNumber}): ");
+                string phone = Console.ReadLine();
+                Console.Write($"New Email ({c.Email}): ");
+                string email = Console.ReadLine();
+
+                if (!string.IsNullOrWhiteSpace(name)) c.Name = name;
+                if (!string.IsNullOrWhiteSpace(lastName)) c.LastName = lastName;
+                if (!string.IsNullOrWhiteSpace(phone)) c.PhoneNumber = phone;
+                if (!string.IsNullOrWhiteSpace(email)) c.Email = email;
+
+                changesMade = true;
+                Console.WriteLine("Contact updated. Press ENTER to continue.");
+            }
+            else
+            {
+                Console.WriteLine("Invalid selection. Press ENTER to return.");
+            }
+
+            Console.ReadLine();
+        }
+
+        static void DeleteContact()
+        {
+            ShowContacts();
+
+            Console.Write("Enter the number of the contact to delete: ");
+            if (int.TryParse(Console.ReadLine(), out int index) && index >= 1 && index <= contacts.Count)
+            {
+                contacts.RemoveAt(index - 1);
+                changesMade = true;
+                Console.WriteLine("Contact deleted. Press ENTER to continue.");
+            }
+            else
+            {
+                Console.WriteLine("Invalid selection. Press ENTER to return.");
+            }
+
+            Console.ReadLine();
+        }
+
+        static void MergeDuplicates()
+        {
+            var uniqueContacts = contacts
+                .GroupBy(c => $"{c.Name.ToLower()}|{c.LastName.ToLower()}")
+                .Select(g => g.First()) // keep the first of each duplicate group
+                .ToList();
+
+            if (uniqueContacts.Count < contacts.Count)
+            {
+                contacts = uniqueContacts;
+                changesMade = true;
+                Console.WriteLine("Duplicates merged. Press ENTER to continue.");
+            }
+            else
+            {
+                Console.WriteLine("No duplicates found. Press ENTER to continue.");
+            }
+
+            Console.ReadLine();
+        }
 
         static void ExitApplication()
         {
@@ -91,6 +261,7 @@ namespace ContactManager
                 Console.WriteLine("Changes have been made. Are you sure you want to exit without saving? (y/n)");
                 if (Console.ReadLine().ToLower() != "y") return;
             }
+
             Console.WriteLine("Thank you for using Contact Manager. Goodbye!");
             Console.ReadLine();
         }
